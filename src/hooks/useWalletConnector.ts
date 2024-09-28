@@ -32,6 +32,7 @@ export const WalletConnector = () => {
         setAccount(account);
         setIsConnected(true);
         setChainId(network.chainId);
+        await fetchBalance(account);
 
         console.log("Connected to account:", account);
       } catch (error) {
@@ -65,25 +66,29 @@ export const WalletConnector = () => {
     }
   };
 
+  const handleaccountchange = (accounts: string[]) => {
+    if (accounts.length === 0) {
+      disconnectWallet();
+    } else {
+      setAccount(accounts[0]);
+    }
+  };
+
+  const handlechainchanged = (chainId: string) => {
+    setChainId(BigInt(parseInt(chainId, 16)));
+  };
+
   useEffect(() => {
     const { ethereum } = window as any;
 
     if (ethereum) {
-      ethereum.on("accountsChanged", (accounts: string[]) => {
-        if (accounts.length === 0) {
-          disconnectWallet();
-        } else {
-          setAccount(accounts[0]);
-        }
-      });
+      ethereum.on("accountsChanged", handleaccountchange);
 
-      ethereum.on("chainChanged", (chainId: string) => {
-        setChainId(BigInt(parseInt(chainId, 16)));
-      });
+      ethereum.on("chainChanged", handlechainchanged);
 
       return () => {
-        ethereum.removeListener("chainChanged", () => {});
-        ethereum.removeListener("accountsChanged", () => {});
+        ethereum.removeListener("chainChanged", handlechainchanged);
+        ethereum.removeListener("accountsChanged", handleaccountchange);
       };
     }
   }, []);
@@ -99,18 +104,3 @@ export const WalletConnector = () => {
     fetchBalance,
   };
 };
-
-{
-  /* 
-  useEffect(() => {
-  
-    if (isConnected && addressInput) {
-      fetchBalance(addressInput);
-    } else {
-      setBalance("");
-    }
-  }, [isConnected, addressInput, chainId]);
-
-  
-  }; */
-}

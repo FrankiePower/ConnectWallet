@@ -1,10 +1,11 @@
-// import React, { useState, useEffect } from "react";
-// import { BrowserProvider, Signer } from "ethers"; // ethers v6
+import { useState } from "react";
 import { WalletConnector } from "./hooks/useWalletConnector";
 
 const Eip1193WalletConnector: React.FC = () => {
   const { account, chainId, connectWallet, disconnectWallet, isConnected } =
     WalletConnector();
+
+  const [addressInput, setAddressInput] = useState("");
 
   return (
     <>
@@ -22,7 +23,13 @@ const Eip1193WalletConnector: React.FC = () => {
         )}
       </div>
       <div>
-        <input type="text" />
+        <input
+          type="text"
+          value={addressInput}
+          onChange={(e) => setAddressInput(e.target.value)}
+          placeholder="Enter Address"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
     </>
   );
