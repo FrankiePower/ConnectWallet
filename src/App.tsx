@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { BrowserProvider, Signer } from "ethers"; // ethers v6
+// import React, { useState, useEffect } from "react";
+// import { BrowserProvider, Signer } from "ethers"; // ethers v6
 import { WalletConnector } from "./hooks/useWalletConnector";
 
 const Eip1193WalletConnector: React.FC = () => {
