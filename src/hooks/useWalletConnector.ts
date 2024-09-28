@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import { BrowserProvider, Signer } from "ethers"; // ethers v6
 
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 export const WalletConnector = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<bigint | null>(null);
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [balance, setBalance] = useState("");
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   // Function to connect to the wallet
