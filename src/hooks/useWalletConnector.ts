@@ -88,7 +88,15 @@ export const WalletConnector = () => {
     }
   }, []);
 
-  return { account, chainId, connectWallet, disconnectWallet, isConnected };
+  return {
+    account,
+    chainId,
+    connectWallet,
+    disconnectWallet,
+    isConnected,
+    provider,
+    balance,
+  };
 };
 
 {
