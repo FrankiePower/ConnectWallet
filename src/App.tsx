@@ -1,80 +1,31 @@
-import { useState } from "react";
-import "./App.css";
-import { ethers } from "ethers";
+import React, { useState, useEffect } from "react";
+import { BrowserProvider, Signer } from "ethers"; // ethers v6
+import { WalletConnector } from "./hooks/useWalletConnector";
 
-function App() {
-  const [connected, setConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [currentChainId, setCurrentChainId] = useState<number | null>(null);
-
-  // Function to connect/disconnect the wallet
-  async function connectWallet() {
-    if (!connected) {
-      // Connect the wallet using ethers.js
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const _walletAddress = await signer.getAddress();
-      setConnected(true);
-      setWalletAddress(_walletAddress);
-    } else {
-      // Disconnect the wallet
-      window.ethereum.selectedAddress = null;
-      setConnected(false);
-      setWalletAddress("");
-    }
-  }
-
-  async function switchNetwork(chainId: number) {
-    if (!window.ethereum) {
-      console.error("No crypto wallet found");
-      return;
-    }
-
-    try {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: ethers.toBeHex(chainId) }],
-      });
-
-      // Update current chain ID state
-      setCurrentChainId(chainId);
-    } catch (err: any) {
-      if (err.code === 4902) {
-        console.error(
-          "This network is not available in your metamask, please add it manually"
-        );
-      } else {
-        console.error(err);
-      }
-    }
-  }
+const Eip1193WalletConnector: React.FC = () => {
+  const { account, chainId, connectWallet, disconnectWallet, isConnected } =
+    WalletConnector();
 
   return (
-    <div className="app">
-      <div className="main">
-        <div className="content">
-          <button className="btn" onClick={connectWallet}>
-            {connected ? "Disconnect Wallet" : "Connect Wallet"}
-          </button>
-          <h3>Address</h3>
-          <h4 className="wal-add">{walletAddress}</h4>
-          {connected && (
-            <div>
-              <h3>Switch Network</h3>
-              <button onClick={() => switchNetwork(4202)}>
-                Lisk sepolia chain
-              </button>
-              <button onClick={() => switchNetwork(8453)}>Base Chain</button>
-              <button onClick={() => switchNetwork(11155111)}>
-                Sepolia Chain
-              </button>
-              <p>Current Chain ID: {currentChainId}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+    <>
+      <div>
+        <h1>Connect Wallet</h1>
 
-export default App;
+        {isConnected ? (
+          <div>
+            <p>Connected Account: {account}</p>
+            <p>Chain ID: {chainId ? chainId.toString() : "Not connected"}</p>
+            <button onClick={disconnectWallet}>Disconnect Wallet</button>
+          </div>
+        ) : (
+          <button onClick={connectWallet}>Connect Wallet</button>
+        )}
+      </div>
+      <div>
+        <input type="text" />
+      </div>
+    </>
+  );
+};
+
+export default Eip1193WalletConnector;
