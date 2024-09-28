@@ -2,8 +2,15 @@ import { useState } from "react";
 import { WalletConnector } from "./hooks/useWalletConnector";
 
 const Eip1193WalletConnector: React.FC = () => {
-  const { account, chainId, connectWallet, disconnectWallet, isConnected } =
-    WalletConnector();
+  const {
+    account,
+    chainId,
+    connectWallet,
+    disconnectWallet,
+    isConnected,
+    fetchBalance,
+    balance,
+  } = WalletConnector();
 
   const [addressInput, setAddressInput] = useState("");
 
@@ -23,13 +30,24 @@ const Eip1193WalletConnector: React.FC = () => {
         )}
       </div>
       <div>
-        <input
-          type="text"
-          value={addressInput}
-          onChange={(e) => setAddressInput(e.target.value)}
-          placeholder="Enter Address"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div>
+          <input
+            type="text"
+            value={addressInput}
+            onChange={(e) => setAddressInput(e.target.value)}
+            placeholder="Enter Address"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={() => fetchBalance(addressInput)}
+            disabled={!addressInput}
+          >
+            Fetch
+          </button>
+        </div>
+        <div>
+          Balance of {account}:{balance}
+        </div>
       </div>
     </>
   );
