@@ -96,6 +96,7 @@ export const WalletConnector = () => {
     isConnected,
     provider,
     balance,
+    fetchBalance,
   };
 };
 
