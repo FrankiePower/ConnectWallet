@@ -36,7 +36,7 @@ const Eip1193WalletConnector: React.FC = () => {
             value={addressInput}
             onChange={(e) => setAddressInput(e.target.value)}
             placeholder="Enter Address"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="addinput"
           />
           <button
             onClick={() => fetchBalance(addressInput)}
@@ -45,7 +45,7 @@ const Eip1193WalletConnector: React.FC = () => {
             Fetch
           </button>
         </div>
-        <div>
+        <div className="balance">
           Balance of {account}:{balance}
         </div>
       </div>
