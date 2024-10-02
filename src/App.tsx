@@ -46,7 +46,7 @@ const Eip1193WalletConnector: React.FC = () => {
           </button>
         </div>
         <div className="balance">
-          Balance of {account}:{balance}
+          Balance of {addressInput}:{balance}
         </div>
       </div>
     </>

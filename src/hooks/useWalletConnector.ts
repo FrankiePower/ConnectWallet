@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserProvider, Signer } from "ethers"; // ethers v6
+import { useContext } from "react";
+import { WalletContext } from "../context/functionalityContext";
 
 declare global {
   interface Window {
@@ -8,11 +10,18 @@ declare global {
 }
 
 export const WalletConnector = () => {
-  const [account, setAccount] = useState<string | null>(null);
-  const [chainId, setChainId] = useState<bigint | null>(null);
-  const [provider, setProvider] = useState<BrowserProvider | null>(null);
-  const [balance, setBalance] = useState("");
-  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const {
+    account,
+    provider,
+    setProvider,
+    balance,
+    setBalance,
+    isConnected,
+    setIsConnected,
+    setAccount,
+    chainId,
+    setChainId,
+  } = useContext(WalletContext);
 
   // Function to connect to the wallet
   const connectWallet = async () => {
@@ -31,15 +40,10 @@ export const WalletConnector = () => {
         setProvider(provider);
         setAccount(account);
         setIsConnected(true);
-        setChainId(network.chainId);
+        setChainId(network.chainId.toString());
         await fetchBalance(account);
-
-        console.log("Connected to account:", account);
-      } catch (error) {
-        console.error("Failed to connect:", error);
-      }
+      } catch (error) {}
     } else {
-      alert("MetaMask not detected. Please install MetaMask!");
     }
   };
 
@@ -52,17 +56,21 @@ export const WalletConnector = () => {
   };
 
   const fetchBalance = async (address: string) => {
-    if (window.ethereum) {
-      try {
-        const balance = await window.ethereum.request({
-          method: "eth_getBalance",
-          params: [address, "latest"],
-        });
-        setBalance(parseInt(balance as string, 16).toString());
-      } catch (error) {
-        console.error("Error fetching balance:", error);
-        setBalance("Error");
-      }
+    if (!window.ethereum) {
+      alert("error");
+      console.error("Ethereum provider not found");
+      return;
+    }
+    try {
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [address, "latest"],
+      });
+      console.log(balance);
+      setBalance(parseInt(balance as string, 16).toString());
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+      setBalance("Error");
     }
   };
 
@@ -75,7 +83,7 @@ export const WalletConnector = () => {
   };
 
   const handlechainchanged = (chainId: string) => {
-    setChainId(BigInt(parseInt(chainId, 16)));
+    setChainId(chainId);
   };
 
   useEffect(() => {
